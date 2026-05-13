@@ -3,11 +3,18 @@
 <head>
 
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<title>Adiutor Statistics Analyzer</title>
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+/>
+
+<title>
+    Adiutor Analytics
+</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
 <style>
@@ -15,24 +22,54 @@
 :root {
 
     --bg: #f5f5f7;
-    --card: rgba(255,255,255,0.72);
+
+    --card:
+        rgba(255,255,255,0.72);
+
+    --card-solid:
+        rgba(255,255,255,0.92);
+
     --text: #111111;
+
     --secondary: #6e6e73;
-    --border: rgba(0,0,0,0.08);
+
+    --border:
+        rgba(0,0,0,0.08);
 
     --accent: #0a84ff;
-    --success: #34c759;
+
+    --accent-soft:
+        rgba(10,132,255,0.14);
+
+    --shadow:
+        0 20px 60px
+        rgba(0,0,0,0.08);
 }
 
-@media (prefers-color-scheme: dark) {
+@media (
+    prefers-color-scheme: dark
+) {
 
     :root {
 
         --bg: #000000;
-        --card: rgba(28,28,30,0.72);
+
+        --card:
+            rgba(28,28,30,0.72);
+
+        --card-solid:
+            rgba(28,28,30,0.9);
+
         --text: #f5f5f7;
+
         --secondary: #98989f;
-        --border: rgba(255,255,255,0.08);
+
+        --border:
+            rgba(255,255,255,0.08);
+
+        --shadow:
+            0 20px 60px
+            rgba(0,0,0,0.45);
     }
 }
 
@@ -55,26 +92,59 @@ body {
         BlinkMacSystemFont,
         sans-serif;
 
-    background: var(--bg);
+    background:
+        var(--bg);
 
-    color: var(--text);
+    color:
+        var(--text);
+
+    -webkit-font-smoothing:
+        antialiased;
 }
+
+/* HERO */
 
 .hero {
 
-    min-height: 70vh;
+    min-height: 58vh;
 
-    padding: 40px 60px;
+    padding:
+        42px 60px
+        28px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    position: relative;
+
+    overflow: hidden;
 
     background:
         radial-gradient(
             circle at top left,
-            rgba(10,132,255,0.12),
+            rgba(10,132,255,0.16),
             transparent 35%
+        ),
+        radial-gradient(
+            circle at bottom right,
+            rgba(10,132,255,0.08),
+            transparent 28%
         );
+}
 
-    display: flex;
-    flex-direction: column;
+.hero::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    backdrop-filter:
+        blur(2px);
+
+    pointer-events: none;
 }
 
 .hero-nav {
@@ -82,76 +152,130 @@ body {
     display: flex;
 
     justify-content: space-between;
+
     align-items: center;
+
+    position: relative;
+
+    z-index: 2;
 }
 
 .brand {
 
     display: flex;
+
     align-items: center;
+
     gap: 12px;
 
     font-size: 18px;
+
     font-weight: 700;
+
+    letter-spacing: -0.3px;
 }
 
 .dot {
 
     width: 10px;
+
     height: 10px;
 
     border-radius: 50%;
 
-    background: var(--accent);
+    background:
+        var(--accent);
+
+    box-shadow:
+        0 0 18px
+        rgba(10,132,255,0.5);
 }
 
 .hero-content {
 
-    margin: auto 0;
+    margin:
+        auto 0 10px;
 
-    max-width: 760px;
-}
+    max-width: 620px;
 
-.hero-content h1 {
+    position: relative;
 
-    font-size: 78px;
-
-    line-height: 0.95;
-
-    margin-bottom: 28px;
-}
-
-.hero-content p {
-
-    font-size: 22px;
-
-    line-height: 1.6;
-
-    color: var(--secondary);
+    z-index: 2;
 }
 
 .eyebrow {
 
-    color: var(--accent);
+    display: inline-flex;
+
+    align-items: center;
+
+    color:
+        var(--accent);
 
     margin-bottom: 18px;
 
     font-weight: 600;
+
+    padding:
+        10px 18px;
+
+    border-radius: 999px;
+
+    background:
+        var(--accent-soft);
+
+    border:
+        1px solid
+        rgba(10,132,255,0.12);
+
+    backdrop-filter:
+        blur(12px);
+
+    font-size: 14px;
 }
+
+.hero-content h1 {
+
+    font-size: 68px;
+
+    line-height: 0.94;
+
+    margin:
+        0 0 20px;
+
+    letter-spacing:
+        -3px;
+}
+
+.hero-content p {
+
+    font-size: 18px;
+
+    line-height: 1.7;
+
+    color:
+        var(--secondary);
+
+    max-width: 560px;
+}
+
+/* SECTIONS */
 
 .section {
 
-    padding: 90px 60px;
+    padding:
+        70px 60px;
 }
 
 .section-header {
 
-    margin-bottom: 40px;
+    margin-bottom: 34px;
 }
 
 .section-label {
 
-    color: var(--accent);
+    color:
+        var(--accent);
 
     margin-bottom: 12px;
 
@@ -160,93 +284,227 @@ body {
 
 .section h2 {
 
-    font-size: 48px;
+    font-size: 46px;
 
-    margin-bottom: 18px;
+    line-height: 1;
+
+    letter-spacing:
+        -2px;
+
+    margin:
+        0 0 18px;
 }
 
 .section p {
 
-    color: var(--secondary);
+    color:
+        var(--secondary);
 
-    line-height: 1.7;
+    line-height: 1.8;
+
+    font-size: 17px;
 }
+
+/* UPLOAD */
 
 .upload-zone {
 
-    background: var(--card);
+    position: relative;
 
-    border: 2px dashed var(--border);
+    background:
+        linear-gradient(
+            180deg,
+            var(--card-solid),
+            var(--card)
+        );
 
-    border-radius: 30px;
+    border:
+        2px dashed
+        rgba(10,132,255,0.16);
 
-    padding: 60px;
+    border-radius: 36px;
+
+    padding:
+        60px 40px;
 
     text-align: center;
 
-    transition: 0.2s ease;
+    backdrop-filter:
+        blur(26px);
+
+    box-shadow:
+        var(--shadow);
+
+    transition:
+        0.25s ease;
 }
 
-.upload-zone:hover {
+.upload-zone.dragover {
 
-    border-color: var(--accent);
+    transform:
+        scale(1.01);
+
+    border-color:
+        var(--accent);
+
+    background:
+        rgba(10,132,255,0.08);
+}
+
+.upload-zone h3 {
+
+    font-size: 26px;
+
+    margin-bottom: 10px;
+
+    letter-spacing:
+        -1px;
+}
+
+.upload-zone p {
+
+    margin: 0;
+
+    color:
+        var(--secondary);
 }
 
 .upload-zone input {
 
-    margin-top: 24px;
+    position: absolute;
+
+    inset: 0;
+
+    opacity: 0;
+
+    cursor: pointer;
 }
+
+.upload-icon {
+
+    width: 72px;
+
+    height: 72px;
+
+    margin:
+        0 auto 22px;
+
+    border-radius: 24px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        var(--accent-soft);
+
+    border:
+        1px solid
+        rgba(10,132,255,0.16);
+
+    font-size: 28px;
+}
+
+/* GRID */
 
 .grid {
 
     display: grid;
 
     grid-template-columns:
-        repeat(auto-fit, minmax(260px, 1fr));
+        repeat(
+            auto-fit,
+            minmax(260px, 1fr)
+        );
 
     gap: 24px;
 }
 
+/* CARDS */
+
 .card {
 
-    background: var(--card);
+    background:
+        linear-gradient(
+            180deg,
+            var(--card-solid),
+            var(--card)
+        );
 
-    backdrop-filter: blur(20px);
+    border:
+        1px solid
+        var(--border);
 
-    border: 1px solid var(--border);
+    border-radius: 32px;
 
-    border-radius: 28px;
+    padding: 32px;
 
-    padding: 28px;
+    backdrop-filter:
+        blur(24px);
+
+    box-shadow:
+        var(--shadow);
+
+    transition:
+        0.25s ease;
+}
+
+.card:hover {
+
+    transform:
+        translateY(-3px);
 }
 
 .metric {
 
-    font-size: 40px;
+    font-size: 46px;
 
     font-weight: 700;
 
-    margin-top: 16px;
+    margin-top: 18px;
+
+    letter-spacing:
+        -2px;
 }
 
 .metric-label {
 
-    color: var(--secondary);
+    color:
+        var(--secondary);
 
-    font-size: 14px;
+    font-size: 13px;
 
     text-transform: uppercase;
 
-    letter-spacing: 1px;
+    letter-spacing: 1.4px;
 }
+
+.card h3 {
+
+    margin-top: 0;
+
+    margin-bottom: 18px;
+
+    font-size: 24px;
+
+    letter-spacing:
+        -1px;
+}
+
+/* CHARTS */
 
 canvas {
 
-    margin-top: 30px;
+    margin-top: 28px;
 
     width: 100% !important;
+
     max-height: 420px;
 }
+
+/* TABLE */
 
 .table-wrapper {
 
@@ -262,26 +520,52 @@ table {
 
 th, td {
 
-    padding: 18px;
+    padding:
+        18px 14px;
 
-    border-bottom: 1px solid var(--border);
+    border-bottom:
+        1px solid
+        var(--border);
 
     text-align: left;
 }
 
 th {
 
-    color: var(--secondary);
+    color:
+        var(--secondary);
 
-    font-size: 14px;
+    font-size: 13px;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+
+    letter-spacing:
+        1px;
 }
+
+tbody tr {
+
+    transition:
+        0.18s ease;
+}
+
+tbody tr:hover {
+
+    background:
+        rgba(10,132,255,0.04);
+}
+
+/* BUTTONS */
 
 .button-row {
 
     display: flex;
+
     gap: 16px;
 
-    margin-top: 28px;
+    margin-top: 32px;
 
     flex-wrap: wrap;
 }
@@ -290,11 +574,13 @@ button {
 
     border: none;
 
-    background: var(--accent);
+    background:
+        var(--accent);
 
     color: white;
 
-    padding: 14px 24px;
+    padding:
+        15px 26px;
 
     border-radius: 999px;
 
@@ -302,21 +588,50 @@ button {
 
     font-size: 15px;
 
-    transition: 0.2s ease;
+    font-weight: 600;
+
+    transition:
+        0.22s ease;
+
+    box-shadow:
+        0 10px 24px
+        rgba(10,132,255,0.22);
 }
 
 button:hover {
 
-    transform: translateY(-2px);
+    transform:
+        translateY(-2px);
 }
 
 .secondary-btn {
 
-    background: transparent;
+    background:
+        transparent;
 
-    border: 1px solid var(--border);
+    border:
+        1px solid
+        var(--border);
 
-    color: var(--text);
+    color:
+        var(--text);
+
+    box-shadow: none;
+}
+
+/* FOOTER */
+
+footer {
+
+    padding:
+        50px 60px;
+
+    color:
+        var(--secondary);
+
+    border-top:
+        1px solid
+        var(--border);
 }
 
 .hidden {
@@ -324,40 +639,45 @@ button:hover {
     display: none;
 }
 
-footer {
-
-    padding: 50px 60px;
-
-    color: var(--secondary);
-
-    border-top: 1px solid var(--border);
-}
+/* RESPONSIVE */
 
 @media (max-width: 900px) {
 
     .hero {
 
-        padding: 28px;
+        padding:
+            28px 28px 20px;
     }
 
     .section {
 
-        padding: 70px 28px;
+        padding:
+            70px 28px;
     }
 
     .hero-content h1 {
 
         font-size: 52px;
+
+        letter-spacing:
+            -2px;
     }
 
     .section h2 {
 
-        font-size: 36px;
+        font-size: 38px;
+    }
+
+    .upload-zone {
+
+        padding:
+            50px 24px;
     }
 
     footer {
 
-        padding: 40px 28px;
+        padding:
+            40px 28px;
     }
 }
 
@@ -372,8 +692,11 @@ footer {
     <div class="hero-nav">
 
         <div class="brand">
+
             <span class="dot"></span>
+
             Adiutor Analytics
+
         </div>
 
     </div>
@@ -381,19 +704,25 @@ footer {
     <div class="hero-content">
 
         <div class="eyebrow">
+
             Local JSON Intelligence
+
         </div>
 
         <h1>
-            Visualize your study behavior.
+
+            Study analytics,
+            visualized cleanly.
+
         </h1>
 
         <p>
-            Import exported Adiutor statistics snapshots
-            to generate momentum analysis,
+
+            Import exported Adiutor snapshots
+            for momentum analysis,
             productivity trends,
-            usage breakdowns,
             and downloadable reports.
+
         </p>
 
     </div>
@@ -405,24 +734,48 @@ footer {
     <div class="section-header">
 
         <div class="section-label">
+
             Import
+
         </div>
 
         <h2>
+
             Load statistics snapshots.
+
         </h2>
 
         <p>
-            Select one or multiple exported JSON files.
+
+            Drag and drop JSON exports
+            or browse locally.
+
         </p>
 
     </div>
 
-    <div class="upload-zone">
+    <div
+        class="upload-zone"
+        id="uploadZone"
+    >
+
+        <div class="upload-icon">
+
+            ↑
+
+        </div>
 
         <h3>
-            Drag or choose JSON exports
+
+            Drop JSON exports here
+
         </h3>
+
+        <p>
+
+            Multiple files supported
+
+        </p>
 
         <input
             type="file"
@@ -443,11 +796,15 @@ footer {
     <div class="section-header">
 
         <div class="section-label">
+
             Overview
+
         </div>
 
         <h2>
+
             Study analytics dashboard.
+
         </h2>
 
     </div>
@@ -457,7 +814,9 @@ footer {
         <div class="card">
 
             <div class="metric-label">
+
                 Total Study Time
+
             </div>
 
             <div
@@ -472,7 +831,9 @@ footer {
         <div class="card">
 
             <div class="metric-label">
+
                 Sessions
+
             </div>
 
             <div
@@ -487,7 +848,9 @@ footer {
         <div class="card">
 
             <div class="metric-label">
+
                 Most Used App
+
             </div>
 
             <div
@@ -502,7 +865,9 @@ footer {
         <div class="card">
 
             <div class="metric-label">
+
                 Average Daily Time
+
             </div>
 
             <div
@@ -516,30 +881,45 @@ footer {
 
     </div>
 
-    <div class="card" style="margin-top: 40px;">
+    <div
+        class="card"
+        style="margin-top: 40px;"
+    >
 
         <h3>
+
             Daily Study Duration
+
         </h3>
 
         <canvas id="studyChart"></canvas>
 
     </div>
 
-    <div class="card" style="margin-top: 40px;">
+    <div
+        class="card"
+        style="margin-top: 40px;"
+    >
 
         <h3>
+
             App Usage Distribution
+
         </h3>
 
         <canvas id="appChart"></canvas>
 
     </div>
 
-    <div class="card" style="margin-top: 40px;">
+    <div
+        class="card"
+        style="margin-top: 40px;"
+    >
 
         <h3>
+
             Exported Snapshot Data
+
         </h3>
 
         <div class="table-wrapper">
@@ -549,10 +929,15 @@ footer {
                 <thead>
 
                     <tr>
+
                         <th>Date</th>
+
                         <th>Hours</th>
+
                         <th>Sessions</th>
+
                         <th>Most Used App</th>
+
                     </tr>
 
                 </thead>
@@ -566,14 +951,18 @@ footer {
         <div class="button-row">
 
             <button onclick="downloadCSV()">
+
                 Download CSV
+
             </button>
 
             <button
                 class="secondary-btn"
                 onclick="downloadPDF()"
             >
+
                 Download PDF Report
+
             </button>
 
         </div>
@@ -591,56 +980,141 @@ footer {
 <script>
 
 const fileInput =
-    document.getElementById("fileInput");
+    document.getElementById(
+        "fileInput"
+    );
+
+const uploadZone =
+    document.getElementById(
+        "uploadZone"
+    );
 
 const dashboard =
-    document.getElementById("dashboard");
+    document.getElementById(
+        "dashboard"
+    );
 
 let parsedData = [];
 
 let studyChart = null;
+
 let appChart = null;
+
+/* DRAG + DROP */
+
+[
+    "dragenter",
+    "dragover"
+].forEach(eventName => {
+
+    uploadZone.addEventListener(
+        eventName,
+        (e) => {
+
+            e.preventDefault();
+
+            e.stopPropagation();
+
+            uploadZone.classList.add(
+                "dragover"
+            );
+        }
+    );
+});
+
+[
+    "dragleave",
+    "drop"
+].forEach(eventName => {
+
+    uploadZone.addEventListener(
+        eventName,
+        (e) => {
+
+            e.preventDefault();
+
+            e.stopPropagation();
+
+            uploadZone.classList.remove(
+                "dragover"
+            );
+        }
+    );
+});
+
+uploadZone.addEventListener(
+    "drop",
+    async (e) => {
+
+        const files =
+            Array.from(
+                e.dataTransfer.files
+            );
+
+        await processFiles(files);
+    }
+);
 
 fileInput.addEventListener(
     "change",
-    async (event) => {
-
-        parsedData = [];
+    async (e) => {
 
         const files =
-            Array.from(event.target.files);
+            Array.from(
+                e.target.files
+            );
 
-        for (const file of files) {
-
-            const text =
-                await file.text();
-
-            try {
-
-                const json =
-                    JSON.parse(text);
-
-                parsedData.push(json);
-
-            } catch {
-
-                console.error(
-                    "Invalid JSON:",
-                    file.name
-                );
-            }
-        }
-
-        parsedData.sort(
-            (a, b) =>
-                new Date(a.date)
-                -
-                new Date(b.date)
-        );
-
-        renderDashboard();
+        await processFiles(files);
     }
 );
+
+async function processFiles(
+    files
+) {
+
+    parsedData = [];
+
+    for (const file of files) {
+
+        const text =
+            await file.text();
+
+        try {
+
+            const json =
+                JSON.parse(text);
+
+            parsedData.push(json);
+
+        } catch {
+
+            console.error(
+                "Invalid JSON:",
+                file.name
+            );
+        }
+    }
+
+    parsedData.sort(
+        (a, b) =>
+            new Date(a.date)
+            -
+            new Date(b.date)
+    );
+
+    renderDashboard();
+
+    setTimeout(() => {
+
+        dashboard.scrollIntoView({
+
+            behavior: "smooth",
+
+            block: "start"
+        });
+
+    }, 120);
+}
 
 function renderDashboard() {
 
@@ -688,8 +1162,9 @@ function renderDashboard() {
 
     const topApp =
         Object.entries(appFrequency)
-        .sort((a, b) =>
-            b[1] - a[1]
+        .sort(
+            (a, b) =>
+                b[1] - a[1]
         )[0]?.[0] || "—";
 
     document.getElementById(
@@ -729,32 +1204,47 @@ function renderTable() {
     parsedData.forEach(item => {
 
         const row =
-            document.createElement("tr");
+            document.createElement(
+                "tr"
+            );
 
         row.innerHTML = `
+
             <td>
+
                 ${
                     new Date(item.date)
                     .toLocaleDateString()
                 }
+
             </td>
 
             <td>
+
                 ${
                     (
-                        item.trackedSeconds / 3600
+                        item.trackedSeconds
+                        / 3600
                     ).toFixed(1)
                 }h
+
             </td>
 
             <td>
-                ${item.sessionCount}
-            </td>
 
-            <td>
                 ${
-                    item.mostUsedApp || "—"
+                    item.sessionCount
                 }
+
+            </td>
+
+            <td>
+
+                ${
+                    item.mostUsedApp
+                    || "—"
+                }
+
             </td>
         `;
 
@@ -762,19 +1252,24 @@ function renderTable() {
     });
 }
 
-function renderCharts(appFrequency) {
+function renderCharts(
+    appFrequency
+) {
 
     const dates =
-        parsedData.map(item =>
-            new Date(item.date)
-            .toLocaleDateString()
+        parsedData.map(
+            item =>
+                new Date(item.date)
+                .toLocaleDateString()
         );
 
     const hours =
-        parsedData.map(item =>
-            (
-                item.trackedSeconds / 3600
-            ).toFixed(2)
+        parsedData.map(
+            item =>
+                (
+                    item.trackedSeconds
+                    / 3600
+                ).toFixed(2)
         );
 
     if (studyChart) {
@@ -798,14 +1293,32 @@ function renderCharts(appFrequency) {
                     datasets: [
 
                         {
+
                             label:
                                 "Study Hours",
 
                             data: hours,
 
-                            tension: 0.35
+                            borderWidth: 3,
+
+                            tension: 0.35,
+
+                            fill: true
                         }
                     ]
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    plugins: {
+
+                        legend: {
+
+                            display: false
+                        }
+                    }
                 }
             }
         );
@@ -834,12 +1347,30 @@ function renderCharts(appFrequency) {
                     datasets: [
 
                         {
+
                             data:
                                 Object.values(
                                     appFrequency
-                                )
+                                ),
+
+                            borderWidth: 0
                         }
                     ]
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    cutout: "72%",
+
+                    plugins: {
+
+                        legend: {
+
+                            position: "bottom"
+                        }
+                    }
                 }
             }
         );
@@ -853,31 +1384,45 @@ function downloadCSV() {
     parsedData.forEach(item => {
 
         csv +=
+
             `${new Date(item.date)
-            .toLocaleDateString()},` +
+            .toLocaleDateString()},`
+
+            +
 
             `${(
-                item.trackedSeconds / 3600
-            ).toFixed(1)},` +
+                item.trackedSeconds
+                / 3600
+            ).toFixed(1)},`
 
-            `${item.sessionCount},` +
+            +
 
-            `${item.mostUsedApp || ""}\n`;
+            `${item.sessionCount},`
+
+            +
+
+            `${item.mostUsedApp
+            || ""}\n`;
     });
 
     const blob =
         new Blob(
             [csv],
             {
-                type: "text/csv"
+                type:
+                    "text/csv"
             }
         );
 
     const url =
-        URL.createObjectURL(blob);
+        URL.createObjectURL(
+            blob
+        );
 
     const a =
-        document.createElement("a");
+        document.createElement(
+            "a"
+        );
 
     a.href = url;
 
@@ -911,16 +1456,26 @@ async function downloadPDF() {
     parsedData.forEach(item => {
 
         const line =
+
             `${new Date(item.date)
-            .toLocaleDateString()} | ` +
+            .toLocaleDateString()} | `
+
+            +
 
             `${(
-                item.trackedSeconds / 3600
-            ).toFixed(1)}h | ` +
+                item.trackedSeconds
+                / 3600
+            ).toFixed(1)}h | `
 
-            `${item.sessionCount} sessions | ` +
+            +
 
-            `${item.mostUsedApp || "—"}`;
+            `${item.sessionCount}
+            sessions | `
+
+            +
+
+            `${item.mostUsedApp
+            || "—"}`;
 
         doc.text(
             line,
