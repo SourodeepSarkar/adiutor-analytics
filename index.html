@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Adiutor Statistics Analyzer</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+<style>
+
+:root {
+
+    --bg: #f5f5f7;
+    --card: rgba(255,255,255,0.72);
+    --text: #111111;
+    --secondary: #6e6e73;
+    --border: rgba(0,0,0,0.08);
+
+    --accent: #0a84ff;
+    --success: #34c759;
+}
+
+@media (prefers-color-scheme: dark) {
+
+    :root {
+
+        --bg: #000000;
+        --card: rgba(28,28,30,0.72);
+        --text: #f5f5f7;
+        --secondary: #98989f;
+        --border: rgba(255,255,255,0.08);
+    }
+}
+
+* {
+
+    box-sizing: border-box;
+}
+
+html {
+
+    scroll-behavior: smooth;
+}
+
+body {
+
+    margin: 0;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        sans-serif;
+
+    background: var(--bg);
+
+    color: var(--text);
+}
+
+.hero {
+
+    min-height: 70vh;
+
+    padding: 40px 60px;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(10,132,255,0.12),
+            transparent 35%
+        );
+
+    display: flex;
+    flex-direction: column;
+}
+
+.hero-nav {
+
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.dot {
+
+    width: 10px;
+    height: 10px;
+
+    border-radius: 50%;
+
+    background: var(--accent);
+}
+
+.hero-content {
+
+    margin: auto 0;
+
+    max-width: 760px;
+}
+
+.hero-content h1 {
+
+    font-size: 78px;
+
+    line-height: 0.95;
+
+    margin-bottom: 28px;
+}
+
+.hero-content p {
+
+    font-size: 22px;
+
+    line-height: 1.6;
+
+    color: var(--secondary);
+}
+
+.eyebrow {
+
+    color: var(--accent);
+
+    margin-bottom: 18px;
+
+    font-weight: 600;
+}
+
+.section {
+
+    padding: 90px 60px;
+}
+
+.section-header {
+
+    margin-bottom: 40px;
+}
+
+.section-label {
+
+    color: var(--accent);
+
+    margin-bottom: 12px;
+
+    font-weight: 600;
+}
+
+.section h2 {
+
+    font-size: 48px;
+
+    margin-bottom: 18px;
+}
+
+.section p {
+
+    color: var(--secondary);
+
+    line-height: 1.7;
+}
+
+.upload-zone {
+
+    background: var(--card);
+
+    border: 2px dashed var(--border);
+
+    border-radius: 30px;
+
+    padding: 60px;
+
+    text-align: center;
+
+    transition: 0.2s ease;
+}
+
+.upload-zone:hover {
+
+    border-color: var(--accent);
+}
+
+.upload-zone input {
+
+    margin-top: 24px;
+}
+
+.grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(260px, 1fr));
+
+    gap: 24px;
+}
+
+.card {
+
+    background: var(--card);
+
+    backdrop-filter: blur(20px);
+
+    border: 1px solid var(--border);
+
+    border-radius: 28px;
+
+    padding: 28px;
+}
+
+.metric {
+
+    font-size: 40px;
+
+    font-weight: 700;
+
+    margin-top: 16px;
+}
+
+.metric-label {
+
+    color: var(--secondary);
+
+    font-size: 14px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+}
+
+canvas {
+
+    margin-top: 30px;
+
+    width: 100% !important;
+    max-height: 420px;
+}
+
+.table-wrapper {
+
+    overflow-x: auto;
+}
+
+table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+th, td {
+
+    padding: 18px;
+
+    border-bottom: 1px solid var(--border);
+
+    text-align: left;
+}
+
+th {
+
+    color: var(--secondary);
+
+    font-size: 14px;
+}
+
+.button-row {
+
+    display: flex;
+    gap: 16px;
+
+    margin-top: 28px;
+
+    flex-wrap: wrap;
+}
+
+button {
+
+    border: none;
+
+    background: var(--accent);
+
+    color: white;
+
+    padding: 14px 24px;
+
+    border-radius: 999px;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    transition: 0.2s ease;
+}
+
+button:hover {
+
+    transform: translateY(-2px);
+}
+
+.secondary-btn {
+
+    background: transparent;
+
+    border: 1px solid var(--border);
+
+    color: var(--text);
+}
+
+.hidden {
+
+    display: none;
+}
+
+footer {
+
+    padding: 50px 60px;
+
+    color: var(--secondary);
+
+    border-top: 1px solid var(--border);
+}
+
+@media (max-width: 900px) {
+
+    .hero {
+
+        padding: 28px;
+    }
+
+    .section {
+
+        padding: 70px 28px;
+    }
+
+    .hero-content h1 {
+
+        font-size: 52px;
+    }
+
+    .section h2 {
+
+        font-size: 36px;
+    }
+
+    footer {
+
+        padding: 40px 28px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="hero">
+
+    <div class="hero-nav">
+
+        <div class="brand">
+            <span class="dot"></span>
+            Adiutor Analytics
+        </div>
+
+    </div>
+
+    <div class="hero-content">
+
+        <div class="eyebrow">
+            Local JSON Intelligence
+        </div>
+
+        <h1>
+            Visualize your study behavior.
+        </h1>
+
+        <p>
+            Import exported Adiutor statistics snapshots
+            to generate momentum analysis,
+            productivity trends,
+            usage breakdowns,
+            and downloadable reports.
+        </p>
+
+    </div>
+
+</div>
+
+<section class="section">
+
+    <div class="section-header">
+
+        <div class="section-label">
+            Import
+        </div>
+
+        <h2>
+            Load statistics snapshots.
+        </h2>
+
+        <p>
+            Select one or multiple exported JSON files.
+        </p>
+
+    </div>
+
+    <div class="upload-zone">
+
+        <h3>
+            Drag or choose JSON exports
+        </h3>
+
+        <input
+            type="file"
+            id="fileInput"
+            accept=".json"
+            multiple
+        />
+
+    </div>
+
+</section>
+
+<section
+    id="dashboard"
+    class="section hidden"
+>
+
+    <div class="section-header">
+
+        <div class="section-label">
+            Overview
+        </div>
+
+        <h2>
+            Study analytics dashboard.
+        </h2>
+
+    </div>
+
+    <div class="grid">
+
+        <div class="card">
+
+            <div class="metric-label">
+                Total Study Time
+            </div>
+
+            <div
+                class="metric"
+                id="totalHours"
+            >
+                0h
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="metric-label">
+                Sessions
+            </div>
+
+            <div
+                class="metric"
+                id="totalSessions"
+            >
+                0
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="metric-label">
+                Most Used App
+            </div>
+
+            <div
+                class="metric"
+                id="topApp"
+            >
+                —
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="metric-label">
+                Average Daily Time
+            </div>
+
+            <div
+                class="metric"
+                id="avgDaily"
+            >
+                0h
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card" style="margin-top: 40px;">
+
+        <h3>
+            Daily Study Duration
+        </h3>
+
+        <canvas id="studyChart"></canvas>
+
+    </div>
+
+    <div class="card" style="margin-top: 40px;">
+
+        <h3>
+            App Usage Distribution
+        </h3>
+
+        <canvas id="appChart"></canvas>
+
+    </div>
+
+    <div class="card" style="margin-top: 40px;">
+
+        <h3>
+            Exported Snapshot Data
+        </h3>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Date</th>
+                        <th>Hours</th>
+                        <th>Sessions</th>
+                        <th>Most Used App</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="tableBody"></tbody>
+
+            </table>
+
+        </div>
+
+        <div class="button-row">
+
+            <button onclick="downloadCSV()">
+                Download CSV
+            </button>
+
+            <button
+                class="secondary-btn"
+                onclick="downloadPDF()"
+            >
+                Download PDF Report
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<footer>
+
+    Built for local-first academic analytics.
+
+</footer>
+
+<script>
+
+const fileInput =
+    document.getElementById("fileInput");
+
+const dashboard =
+    document.getElementById("dashboard");
+
+let parsedData = [];
+
+let studyChart = null;
+let appChart = null;
+
+fileInput.addEventListener(
+    "change",
+    async (event) => {
+
+        parsedData = [];
+
+        const files =
+            Array.from(event.target.files);
+
+        for (const file of files) {
+
+            const text =
+                await file.text();
+
+            try {
+
+                const json =
+                    JSON.parse(text);
+
+                parsedData.push(json);
+
+            } catch {
+
+                console.error(
+                    "Invalid JSON:",
+                    file.name
+                );
+            }
+        }
+
+        parsedData.sort(
+            (a, b) =>
+                new Date(a.date)
+                -
+                new Date(b.date)
+        );
+
+        renderDashboard();
+    }
+);
+
+function renderDashboard() {
+
+    dashboard.classList.remove(
+        "hidden"
+    );
+
+    let totalSeconds = 0;
+
+    let totalSessions = 0;
+
+    let appFrequency = {};
+
+    parsedData.forEach(item => {
+
+        totalSeconds +=
+            item.trackedSeconds || 0;
+
+        totalSessions +=
+            item.sessionCount || 0;
+
+        if (item.mostUsedApp) {
+
+            appFrequency[
+                item.mostUsedApp
+            ] =
+                (
+                    appFrequency[
+                        item.mostUsedApp
+                    ] || 0
+                ) + 1;
+        }
+    });
+
+    const totalHours =
+        (
+            totalSeconds / 3600
+        ).toFixed(1);
+
+    const averageHours =
+        (
+            totalHours /
+            parsedData.length
+        ).toFixed(1);
+
+    const topApp =
+        Object.entries(appFrequency)
+        .sort((a, b) =>
+            b[1] - a[1]
+        )[0]?.[0] || "—";
+
+    document.getElementById(
+        "totalHours"
+    ).innerText =
+        totalHours + "h";
+
+    document.getElementById(
+        "totalSessions"
+    ).innerText =
+        totalSessions;
+
+    document.getElementById(
+        "topApp"
+    ).innerText =
+        topApp;
+
+    document.getElementById(
+        "avgDaily"
+    ).innerText =
+        averageHours + "h";
+
+    renderTable();
+
+    renderCharts(appFrequency);
+}
+
+function renderTable() {
+
+    const body =
+        document.getElementById(
+            "tableBody"
+        );
+
+    body.innerHTML = "";
+
+    parsedData.forEach(item => {
+
+        const row =
+            document.createElement("tr");
+
+        row.innerHTML = `
+            <td>
+                ${
+                    new Date(item.date)
+                    .toLocaleDateString()
+                }
+            </td>
+
+            <td>
+                ${
+                    (
+                        item.trackedSeconds / 3600
+                    ).toFixed(1)
+                }h
+            </td>
+
+            <td>
+                ${item.sessionCount}
+            </td>
+
+            <td>
+                ${
+                    item.mostUsedApp || "—"
+                }
+            </td>
+        `;
+
+        body.appendChild(row);
+    });
+}
+
+function renderCharts(appFrequency) {
+
+    const dates =
+        parsedData.map(item =>
+            new Date(item.date)
+            .toLocaleDateString()
+        );
+
+    const hours =
+        parsedData.map(item =>
+            (
+                item.trackedSeconds / 3600
+            ).toFixed(2)
+        );
+
+    if (studyChart) {
+
+        studyChart.destroy();
+    }
+
+    studyChart =
+        new Chart(
+            document.getElementById(
+                "studyChart"
+            ),
+            {
+
+                type: "line",
+
+                data: {
+
+                    labels: dates,
+
+                    datasets: [
+
+                        {
+                            label:
+                                "Study Hours",
+
+                            data: hours,
+
+                            tension: 0.35
+                        }
+                    ]
+                }
+            }
+        );
+
+    if (appChart) {
+
+        appChart.destroy();
+    }
+
+    appChart =
+        new Chart(
+            document.getElementById(
+                "appChart"
+            ),
+            {
+
+                type: "doughnut",
+
+                data: {
+
+                    labels:
+                        Object.keys(
+                            appFrequency
+                        ),
+
+                    datasets: [
+
+                        {
+                            data:
+                                Object.values(
+                                    appFrequency
+                                )
+                        }
+                    ]
+                }
+            }
+        );
+}
+
+function downloadCSV() {
+
+    let csv =
+        "Date,Hours,Sessions,Most Used App\n";
+
+    parsedData.forEach(item => {
+
+        csv +=
+            `${new Date(item.date)
+            .toLocaleDateString()},` +
+
+            `${(
+                item.trackedSeconds / 3600
+            ).toFixed(1)},` +
+
+            `${item.sessionCount},` +
+
+            `${item.mostUsedApp || ""}\n`;
+    });
+
+    const blob =
+        new Blob(
+            [csv],
+            {
+                type: "text/csv"
+            }
+        );
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const a =
+        document.createElement("a");
+
+    a.href = url;
+
+    a.download =
+        "adiutor-report.csv";
+
+    a.click();
+}
+
+async function downloadPDF() {
+
+    const {
+        jsPDF
+    } = window.jspdf;
+
+    const doc =
+        new jsPDF();
+
+    doc.setFontSize(22);
+
+    doc.text(
+        "Adiutor Analytics Report",
+        20,
+        20
+    );
+
+    doc.setFontSize(12);
+
+    let y = 40;
+
+    parsedData.forEach(item => {
+
+        const line =
+            `${new Date(item.date)
+            .toLocaleDateString()} | ` +
+
+            `${(
+                item.trackedSeconds / 3600
+            ).toFixed(1)}h | ` +
+
+            `${item.sessionCount} sessions | ` +
+
+            `${item.mostUsedApp || "—"}`;
+
+        doc.text(
+            line,
+            20,
+            y
+        );
+
+        y += 10;
+
+        if (y > 270) {
+
+            doc.addPage();
+
+            y = 20;
+        }
+    });
+
+    doc.save(
+        "adiutor-report.pdf"
+    );
+}
+
+</script>
+
+</body>
+</html>
