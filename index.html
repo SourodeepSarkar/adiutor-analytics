@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8" />
@@ -7,6 +8,11 @@
 <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
+/>
+
+<meta
+    name="color-scheme"
+    content="light dark"
 />
 
 <title>
@@ -39,11 +45,13 @@
     --accent: #0a84ff;
 
     --accent-soft:
-        rgba(10,132,255,0.14);
+        rgba(10,132,255,0.12);
 
     --shadow:
         0 20px 60px
         rgba(0,0,0,0.08);
+
+    --radius: 34px;
 }
 
 @media (
@@ -58,7 +66,7 @@
             rgba(28,28,30,0.72);
 
         --card-solid:
-            rgba(28,28,30,0.9);
+            rgba(28,28,30,0.92);
 
         --text: #f5f5f7;
 
@@ -68,8 +76,8 @@
             rgba(255,255,255,0.08);
 
         --shadow:
-            0 20px 60px
-            rgba(0,0,0,0.45);
+            0 24px 70px
+            rgba(0,0,0,0.48);
     }
 }
 
@@ -100,54 +108,57 @@ body {
 
     -webkit-font-smoothing:
         antialiased;
+
+    overflow-x: hidden;
 }
 
-/* HERO */
+/* BACKGROUND */
 
-.hero {
+body::before {
 
-    min-height: 58vh;
+    content: "";
 
-    padding:
-        42px 60px
-        28px;
+    position: fixed;
 
-    display: flex;
+    inset: 0;
 
-    flex-direction: column;
-
-    position: relative;
-
-    overflow: hidden;
+    pointer-events: none;
 
     background:
         radial-gradient(
             circle at top left,
-            rgba(10,132,255,0.16),
-            transparent 35%
+            rgba(10,132,255,0.14),
+            transparent 30%
         ),
         radial-gradient(
             circle at bottom right,
-            rgba(10,132,255,0.08),
+            rgba(94,92,230,0.08),
             transparent 28%
         );
+
+    z-index: -1;
 }
 
-.hero::before {
+/* NAVBAR */
 
-    content: "";
+.global-nav {
 
-    position: absolute;
+    position: fixed;
 
-    inset: 0;
+    top: 18px;
 
-    backdrop-filter:
-        blur(2px);
+    left: 50%;
 
-    pointer-events: none;
-}
+    transform: translateX(-50%);
 
-.hero-nav {
+    width: calc(100% - 40px);
+
+    max-width: 1180px;
+
+    z-index: 9999;
+
+    padding:
+        14px 22px;
 
     display: flex;
 
@@ -155,9 +166,39 @@ body {
 
     align-items: center;
 
-    position: relative;
+    border-radius: 999px;
 
-    z-index: 2;
+    backdrop-filter: blur(30px);
+
+    -webkit-backdrop-filter: blur(30px);
+
+    background:
+        rgba(255,255,255,0.68);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.4);
+
+    box-shadow:
+        0 10px 40px
+        rgba(0,0,0,0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+
+    .global-nav {
+
+        background:
+            rgba(18,18,20,0.72);
+
+        border:
+            1px solid
+            rgba(255,255,255,0.06);
+
+        box-shadow:
+            0 12px 50px
+            rgba(0,0,0,0.45);
+    }
 }
 
 .brand {
@@ -172,7 +213,7 @@ body {
 
     font-weight: 700;
 
-    letter-spacing: -0.3px;
+    letter-spacing: -0.4px;
 }
 
 .dot {
@@ -188,19 +229,70 @@ body {
 
     box-shadow:
         0 0 18px
-        rgba(10,132,255,0.5);
+        rgba(10,132,255,0.45);
+}
+
+.nav-links {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 24px;
+}
+
+.nav-links a {
+
+    text-decoration: none;
+
+    color:
+        var(--secondary);
+
+    font-size: 15px;
+
+    transition:
+        0.2s ease;
+}
+
+.nav-links a:hover {
+
+    color:
+        var(--text);
+}
+
+/* HERO */
+
+.hero {
+
+    min-height: 92vh;
+
+    padding:
+        150px 60px 70px;
+
+    display: flex;
+
+    align-items: center;
+
+    position: relative;
+}
+
+.hero-grid {
+
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        1.1fr 0.9fr;
+
+    gap: 40px;
+
+    align-items: center;
 }
 
 .hero-content {
 
-    margin:
-        auto 0 10px;
-
-    max-width: 620px;
-
-    position: relative;
-
-    z-index: 2;
+    max-width: 700px;
 }
 
 .eyebrow {
@@ -209,67 +301,313 @@ body {
 
     align-items: center;
 
-    color:
-        var(--accent);
-
-    margin-bottom: 18px;
-
-    font-weight: 600;
-
     padding:
-        10px 18px;
+        12px 18px;
 
     border-radius: 999px;
+
+    margin-bottom: 26px;
 
     background:
         var(--accent-soft);
 
     border:
         1px solid
-        rgba(10,132,255,0.12);
+        rgba(10,132,255,0.16);
 
-    backdrop-filter:
-        blur(12px);
+    color:
+        var(--accent);
+
+    font-weight: 600;
 
     font-size: 14px;
 }
 
-.hero-content h1 {
+.hero h1 {
 
-    font-size: 68px;
+    font-size: 84px;
 
-    line-height: 0.94;
-
-    margin:
-        0 0 20px;
+    line-height: 0.92;
 
     letter-spacing:
-        -3px;
+        -4px;
+
+    margin:
+        0 0 26px;
 }
 
-.hero-content p {
+.hero p {
 
-    font-size: 18px;
+    font-size: 21px;
 
     line-height: 1.7;
 
     color:
         var(--secondary);
 
-    max-width: 560px;
+    max-width: 620px;
 }
 
-/* SECTIONS */
+.hero-actions {
+
+    display: flex;
+
+    gap: 16px;
+
+    flex-wrap: wrap;
+
+    margin-top: 40px;
+}
+
+.hero-actions a {
+
+    text-decoration: none;
+
+    padding:
+        16px 28px;
+
+    border-radius: 999px;
+
+    font-weight: 600;
+
+    transition:
+        0.22s ease;
+}
+
+.primary-btn {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(10,132,255,1),
+            rgba(94,92,230,1)
+        );
+
+    color: white;
+
+    box-shadow:
+        0 16px 40px
+        rgba(10,132,255,0.28);
+}
+
+.primary-btn:hover {
+
+    transform:
+        translateY(-3px);
+}
+
+.secondary-btn {
+
+    border:
+        1px solid
+        var(--border);
+
+    color:
+        var(--text);
+
+    background:
+        rgba(255,255,255,0.5);
+
+    backdrop-filter:
+        blur(16px);
+}
+
+@media (prefers-color-scheme: dark) {
+
+    .secondary-btn {
+
+        background:
+            rgba(255,255,255,0.04);
+    }
+}
+
+/* HERO PREVIEW */
+
+.hero-preview {
+
+    background:
+        linear-gradient(
+            180deg,
+            var(--card-solid),
+            var(--card)
+        );
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius:
+        40px;
+
+    padding: 28px;
+
+    backdrop-filter:
+        blur(26px);
+
+    box-shadow:
+        var(--shadow);
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+.preview-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-bottom: 28px;
+}
+
+.preview-pill {
+
+    padding:
+        10px 14px;
+
+    border-radius: 999px;
+
+    font-size: 13px;
+
+    background:
+        rgba(10,132,255,0.1);
+
+    color:
+        var(--accent);
+
+    font-weight: 600;
+}
+
+.preview-chart {
+
+    height: 220px;
+
+    border-radius:
+        28px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(10,132,255,0.12),
+            rgba(10,132,255,0.02)
+        );
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+.preview-chart::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    bottom: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(10,132,255,0.3),
+            transparent
+        );
+
+    clip-path:
+        polygon(
+            0 90%,
+            10% 82%,
+            20% 70%,
+            35% 68%,
+            48% 50%,
+            60% 58%,
+            72% 38%,
+            84% 30%,
+            100% 10%,
+            100% 100%,
+            0 100%
+        );
+}
+
+.preview-metrics {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 16px;
+
+    margin-top: 22px;
+}
+
+.preview-box {
+
+    background:
+        rgba(255,255,255,0.45);
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius:
+        24px;
+
+    padding: 18px;
+}
+
+@media (prefers-color-scheme: dark) {
+
+    .preview-box {
+
+        background:
+            rgba(255,255,255,0.03);
+    }
+}
+
+.preview-box span {
+
+    display: block;
+
+    color:
+        var(--secondary);
+
+    font-size: 12px;
+
+    margin-bottom: 10px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+}
+
+.preview-box strong {
+
+    font-size: 26px;
+
+    letter-spacing:
+        -1px;
+}
+
+/* SECTION */
 
 .section {
 
     padding:
-        70px 60px;
+        110px 60px;
 }
 
 .section-header {
 
-    margin-bottom: 34px;
+    max-width: 760px;
+
+    margin-bottom: 54px;
 }
 
 .section-label {
@@ -277,22 +615,22 @@ body {
     color:
         var(--accent);
 
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 
     font-weight: 600;
 }
 
 .section h2 {
 
-    font-size: 46px;
+    font-size: 58px;
 
     line-height: 1;
 
     letter-spacing:
-        -2px;
+        -3px;
 
     margin:
-        0 0 18px;
+        0 0 20px;
 }
 
 .section p {
@@ -302,7 +640,7 @@ body {
 
     line-height: 1.8;
 
-    font-size: 17px;
+    font-size: 18px;
 }
 
 /* UPLOAD */
@@ -322,10 +660,11 @@ body {
         2px dashed
         rgba(10,132,255,0.16);
 
-    border-radius: 36px;
+    border-radius:
+        40px;
 
     padding:
-        60px 40px;
+        80px 40px;
 
     text-align: center;
 
@@ -339,6 +678,12 @@ body {
         0.25s ease;
 }
 
+.upload-zone:hover {
+
+    transform:
+        translateY(-2px);
+}
+
 .upload-zone.dragover {
 
     transform:
@@ -349,24 +694,6 @@ body {
 
     background:
         rgba(10,132,255,0.08);
-}
-
-.upload-zone h3 {
-
-    font-size: 26px;
-
-    margin-bottom: 10px;
-
-    letter-spacing:
-        -1px;
-}
-
-.upload-zone p {
-
-    margin: 0;
-
-    color:
-        var(--secondary);
 }
 
 .upload-zone input {
@@ -382,14 +709,15 @@ body {
 
 .upload-icon {
 
-    width: 72px;
+    width: 82px;
 
-    height: 72px;
+    height: 82px;
 
     margin:
-        0 auto 22px;
+        0 auto 24px;
 
-    border-radius: 24px;
+    border-radius:
+        28px;
 
     display: flex;
 
@@ -397,14 +725,33 @@ body {
 
     justify-content: center;
 
+    font-size: 32px;
+
     background:
-        var(--accent-soft);
+        rgba(10,132,255,0.12);
 
     border:
         1px solid
         rgba(10,132,255,0.16);
+}
 
-    font-size: 28px;
+.upload-zone h3 {
+
+    font-size: 32px;
+
+    margin:
+        0 0 14px;
+
+    letter-spacing:
+        -1px;
+}
+
+.upload-zone p {
+
+    color:
+        var(--secondary);
+
+    margin: 0;
 }
 
 /* GRID */
@@ -437,7 +784,8 @@ body {
         1px solid
         var(--border);
 
-    border-radius: 32px;
+    border-radius:
+        var(--radius);
 
     padding: 32px;
 
@@ -448,25 +796,13 @@ body {
         var(--shadow);
 
     transition:
-        0.25s ease;
+        0.24s ease;
 }
 
 .card:hover {
 
     transform:
-        translateY(-3px);
-}
-
-.metric {
-
-    font-size: 46px;
-
-    font-weight: 700;
-
-    margin-top: 18px;
-
-    letter-spacing:
-        -2px;
+        translateY(-4px);
 }
 
 .metric-label {
@@ -478,16 +814,27 @@ body {
 
     text-transform: uppercase;
 
-    letter-spacing: 1.4px;
+    letter-spacing: 1.5px;
+}
+
+.metric {
+
+    font-size: 54px;
+
+    font-weight: 700;
+
+    margin-top: 20px;
+
+    letter-spacing:
+        -3px;
 }
 
 .card h3 {
 
-    margin-top: 0;
+    margin:
+        0 0 22px;
 
-    margin-bottom: 18px;
-
-    font-size: 24px;
+    font-size: 28px;
 
     letter-spacing:
         -1px;
@@ -497,7 +844,7 @@ body {
 
 canvas {
 
-    margin-top: 28px;
+    margin-top: 24px;
 
     width: 100% !important;
 
@@ -541,8 +888,7 @@ th {
 
     text-transform: uppercase;
 
-    letter-spacing:
-        1px;
+    letter-spacing: 1px;
 }
 
 tbody tr {
@@ -574,13 +920,8 @@ button {
 
     border: none;
 
-    background:
-        var(--accent);
-
-    color: white;
-
     padding:
-        15px 26px;
+        16px 28px;
 
     border-radius: 999px;
 
@@ -592,19 +933,31 @@ button {
 
     transition:
         0.22s ease;
-
-    box-shadow:
-        0 10px 24px
-        rgba(10,132,255,0.22);
 }
 
-button:hover {
+.primary-action {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(10,132,255,1),
+            rgba(94,92,230,1)
+        );
+
+    color: white;
+
+    box-shadow:
+        0 12px 30px
+        rgba(10,132,255,0.24);
+}
+
+.primary-action:hover {
 
     transform:
         translateY(-2px);
 }
 
-.secondary-btn {
+.secondary-action {
 
     background:
         transparent;
@@ -615,8 +968,6 @@ button:hover {
 
     color:
         var(--text);
-
-    box-shadow: none;
 }
 
 /* FOOTER */
@@ -625,6 +976,14 @@ footer {
 
     padding:
         50px 60px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    flex-wrap: wrap;
+
+    gap: 12px;
 
     color:
         var(--secondary);
@@ -641,23 +1000,29 @@ footer {
 
 /* RESPONSIVE */
 
-@media (max-width: 900px) {
+@media (max-width: 980px) {
+
+    .hero-grid {
+
+        grid-template-columns:
+            1fr;
+    }
 
     .hero {
 
         padding:
-            28px 28px 20px;
+            130px 28px 70px;
     }
 
     .section {
 
         padding:
-            70px 28px;
+            80px 28px;
     }
 
-    .hero-content h1 {
+    .hero h1 {
 
-        font-size: 52px;
+        font-size: 58px;
 
         letter-spacing:
             -2px;
@@ -665,13 +1030,18 @@ footer {
 
     .section h2 {
 
-        font-size: 38px;
+        font-size: 42px;
     }
 
-    .upload-zone {
+    .preview-metrics {
 
-        padding:
-            50px 24px;
+        grid-template-columns:
+            1fr;
+    }
+
+    .nav-links {
+
+        display: none;
     }
 
     footer {
@@ -687,49 +1057,156 @@ footer {
 
 <body>
 
-<div class="hero">
+<nav class="global-nav">
 
-    <div class="hero-nav">
+    <div class="brand">
 
-        <div class="brand">
+        <span class="dot"></span>
 
-            <span class="dot"></span>
-
-            Adiutor Analytics
-
-        </div>
+        Adiutor Analytics
 
     </div>
 
-    <div class="hero-content">
+    <div class="nav-links">
 
-        <div class="eyebrow">
+        <a href="#upload">
+            Import
+        </a>
 
-            Local JSON Intelligence
+        <a href="#dashboard">
+            Dashboard
+        </a>
+
+        <a href="#reports">
+            Reports
+        </a>
+
+    </div>
+
+</nav>
+
+<div class="hero">
+
+    <div class="hero-grid">
+
+        <div class="hero-content">
+
+            <div class="eyebrow">
+
+                Local JSON Intelligence
+
+            </div>
+
+            <h1>
+
+                Study analytics,
+                visualized cleanly.
+
+            </h1>
+
+            <p>
+
+                Import exported Adiutor snapshots
+                for momentum analysis,
+                productivity trends,
+                and downloadable reports.
+
+            </p>
+
+            <div class="hero-actions">
+
+                <a
+                    href="#upload"
+                    class="primary-btn"
+                >
+
+                    Import Snapshots
+
+                </a>
+
+                <a
+                    href="#dashboard"
+                    class="secondary-btn"
+                >
+
+                    View Dashboard
+
+                </a>
+
+            </div>
 
         </div>
 
-        <h1>
+        <div class="hero-preview">
 
-            Study analytics,
-            visualized cleanly.
+            <div class="preview-top">
 
-        </h1>
+                <div class="preview-pill">
 
-        <p>
+                    Analytics Preview
 
-            Import exported Adiutor snapshots
-            for momentum analysis,
-            productivity trends,
-            and downloadable reports.
+                </div>
 
-        </p>
+                <div class="preview-pill">
+
+                    Local-First
+
+                </div>
+
+            </div>
+
+            <div class="preview-chart"></div>
+
+            <div class="preview-metrics">
+
+                <div class="preview-box">
+
+                    <span>
+                        Total Hours
+                    </span>
+
+                    <strong>
+                        124h
+                    </strong>
+
+                </div>
+
+                <div class="preview-box">
+
+                    <span>
+                        Focus Score
+                    </span>
+
+                    <strong>
+                        89%
+                    </strong>
+
+                </div>
+
+                <div class="preview-box">
+
+                    <span>
+                        Sessions
+                    </span>
+
+                    <strong>
+                        42
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
 
 </div>
 
-<section class="section">
+<section
+    id="upload"
+    class="section"
+>
 
     <div class="section-header">
 
@@ -895,6 +1372,7 @@ footer {
     </div>
 
     <div
+        id="reports"
         class="card"
         style="margin-top: 40px;"
     >
@@ -931,14 +1409,17 @@ footer {
 
         <div class="button-row">
 
-            <button onclick="downloadCSV()">
+            <button
+                class="primary-action"
+                onclick="downloadCSV()"
+            >
 
                 Download CSV
 
             </button>
 
             <button
-                class="secondary-btn"
+                class="secondary-action"
                 onclick="downloadPDF()"
             >
 
@@ -953,12 +1434,14 @@ footer {
 </section>
 
 <footer>
+
     <div>
-
         © 2026 Adiutor
-
     </div>
-    <div>Built for local-first academic analytics.</div>
+
+    <div>
+        Built for local-first academic analytics.
+    </div>
 
 </footer>
 
@@ -1459,4 +1942,5 @@ async function downloadPDF() {
 </script>
 
 </body>
+
 </html>
