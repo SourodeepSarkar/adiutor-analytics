@@ -832,23 +832,6 @@ footer {
 
             <div class="metric-label">
 
-                Sessions
-
-            </div>
-
-            <div
-                class="metric"
-                id="totalSessions"
-            >
-                0
-            </div>
-
-        </div>
-
-        <div class="card">
-
-            <div class="metric-label">
-
                 Most Used App
 
             </div>
@@ -933,8 +916,6 @@ footer {
                         <th>Date</th>
 
                         <th>Hours</th>
-
-                        <th>Sessions</th>
 
                         <th>Most Used App</th>
 
@@ -1128,17 +1109,12 @@ function renderDashboard() {
 
     let totalSeconds = 0;
 
-    let totalSessions = 0;
-
     let appFrequency = {};
 
     parsedData.forEach(item => {
 
         totalSeconds +=
             item.trackedSeconds || 0;
-
-        totalSessions +=
-            item.sessionCount || 0;
 
         if (item.mostUsedApp) {
 
@@ -1175,11 +1151,6 @@ function renderDashboard() {
         "totalHours"
     ).innerText =
         totalHours + "h";
-
-    document.getElementById(
-        "totalSessions"
-    ).innerText =
-        totalSessions;
 
     document.getElementById(
         "topApp"
@@ -1231,14 +1202,6 @@ function renderTable() {
                         / 3600
                     ).toFixed(1)
                 }h
-
-            </td>
-
-            <td>
-
-                ${
-                    item.sessionCount
-                }
 
             </td>
 
@@ -1383,7 +1346,7 @@ function renderCharts(
 function downloadCSV() {
 
     let csv =
-        "Date,Hours,Sessions,Most Used App\n";
+        "Date,Hours,Most Used App\n";
 
     parsedData.forEach(item => {
 
@@ -1398,10 +1361,6 @@ function downloadCSV() {
                 item.trackedSeconds
                 / 3600
             ).toFixed(1)},`
-
-            +
-
-            `${item.sessionCount},`
 
             +
 
@@ -1470,11 +1429,6 @@ async function downloadPDF() {
                 item.trackedSeconds
                 / 3600
             ).toFixed(1)}h | `
-
-            +
-
-            `${item.sessionCount}
-            sessions | `
 
             +
 
