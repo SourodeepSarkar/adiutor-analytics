@@ -1595,6 +1595,32 @@ footer {
 
 <script>
 
+    window.loadDesktopPayload =
+function(payload) {
+
+    if (
+        !Array.isArray(payload)
+    ) {
+
+        return;
+    }
+
+    parsedData = payload;
+
+    renderDashboard();
+
+    setTimeout(() => {
+
+        dashboard.scrollIntoView({
+
+            behavior: "smooth",
+
+            block: "start"
+        });
+
+    }, 350);
+};
+    
 const fileInput =
     document.getElementById(
         "fileInput"
