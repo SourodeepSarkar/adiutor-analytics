@@ -2054,62 +2054,741 @@ function downloadCSV() {
 
 async function downloadPDF() {
 
-    const {
-        jsPDF
-    } = window.jspdf;
+    const { jsPDF } =
+        window.jspdf;
 
     const doc =
-        new jsPDF();
+        new jsPDF({
+            orientation: "portrait",
+            unit: "mm",
+            format: "a4"
+        });
 
-    doc.setFontSize(22);
+    const pageWidth =
+        doc.internal.pageSize.getWidth();
 
-    doc.text(
-        "Adiutor Analytics Report",
-        20,
-        20
-    );
+    const pageHeight =
+        doc.internal.pageSize.getHeight();
 
-    doc.setFontSize(12);
+    const margin = 18;
 
-    let y = 40;
+    let y = 0;
+
+    // =====================
+    // ANALYTICS
+    // =====================
+
+    let totalSeconds = 0;
+
+    const appFrequency = {};
 
     parsedData.forEach(item => {
 
-        const line =
+        totalSeconds +=
+            item.trackedSeconds || 0;
 
-            `${new Date(item.date)
-            .toLocaleDateString()} | `
+        if (item.mostUsedApp) {
 
-            +
+            appFrequency[
+                item.mostUsedApp
+            ] =
+                (
+                    appFrequency[
+                        item.mostUsedApp
+                    ] || 0
+                ) + 1;
+        }
+    });
 
-            `${(
-                item.trackedSeconds
-                / 3600
-            ).toFixed(1)}h | `
+    const totalHours =
+        (
+            totalSeconds / 3600
+        ).toFixed(1);
 
-            +
+    const averageDaily =
+        (
+            Number(totalHours)
+            /
+            parsedData.length
+        ).toFixed(1);
 
-            `${item.mostUsedApp
-            || "—"}`;
+    const topApp =
+        Object.entries(appFrequency)
+        .sort(
+            (a, b) =>
+                b[1] - a[1]
+        )[0]?.[0]
+        || "—";
+
+    const bestDay =
+        parsedData.reduce(
+            (max, item) =>
+                item.trackedSeconds >
+                max.trackedSeconds
+                    ? item
+                    : max,
+            parsedData[0]
+        );
+
+    const lowestDay =
+        parsedData.reduce(
+            (min, item) =>
+                item.trackedSeconds <
+                min.trackedSeconds
+                    ? item
+                    : min,
+            parsedData[0]
+        );
+
+    const studyDays =
+        parsedData.filter(
+            d => d.trackedSeconds > 0
+        ).length;
+
+    const consistency =
+        (
+            (
+                studyDays
+                /
+                parsedData.length
+            ) * 100
+        ).toFixed(0);
+
+    const generatedDate =
+        new Date()
+        .toLocaleDateString(
+            "en-IN",
+            {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            }
+        );
+
+    // =====================
+    // HELPERS
+    // =====================
+
+    function drawHeader() {
+
+        doc.setFillColor(
+            10,
+            132,
+            255
+        );
+
+        doc.rect(
+            0,
+            0,
+            pageWidth,
+            36,
+            "F"
+        );
+
+        doc.setFillColor(
+            255,
+            255,
+            255
+        );
+
+        doc.circle(
+            24,
+            18,
+            5,
+            "F"
+        );
+
+        doc.setTextColor(
+            255
+        );
+
+        doc.setFont(
+            "helvetica",
+            "bold"
+        );
+
+        doc.setFontSize(
+            24
+        );
 
         doc.text(
-            line,
-            20,
+            "Adiutor Analytics",
+            34,
+            18
+        );
+
+        doc.setFont(
+            "helvetica",
+            "normal"
+        );
+
+        doc.setFontSize(
+            11
+        );
+
+        doc.text(
+            "Study Intelligence Report",
+            34,
+            24
+        );
+
+        doc.text(
+            `Generated on ${generatedDate}`,
+            pageWidth - 68,
+            24
+        );
+
+        y = 52;
+    }
+
+    function ensureSpace(
+        neededHeight
+    ) {
+
+        if (
+            y + neededHeight >
+            pageHeight - 24
+        ) {
+
+            doc.addPage();
+
+            drawHeader();
+        }
+    }
+
+    function drawTableHeader() {
+
+        doc.setFillColor(
+            240,
+            242,
+            245
+        );
+
+        doc.rect(
+            margin,
+            y - 6,
+            170,
+            10,
+            "F"
+        );
+
+        doc.setFont(
+            "helvetica",
+            "bold"
+        );
+
+        doc.setFontSize(
+            11
+        );
+
+        doc.setTextColor(0);
+
+        doc.text(
+            "Date",
+            22,
+            y
+        );
+
+        doc.text(
+            "Hours",
+            90,
+            y
+        );
+
+        doc.text(
+            "Most Used App",
+            125,
             y
         );
 
         y += 10;
+    }
 
-        if (y > 270) {
+    function cropChartToSquare(chart) {
 
-            doc.addPage();
+        const canvas =
+            chart.canvas;
 
-            y = 20;
+        const size =
+            Math.min(
+                canvas.width,
+                canvas.height
+            );
+
+        const temp =
+            document.createElement(
+                "canvas"
+            );
+
+        temp.width =
+            size;
+
+        temp.height =
+            size;
+
+        const ctx =
+            temp.getContext(
+                "2d"
+            );
+
+        ctx.drawImage(
+            canvas,
+            (
+                canvas.width -
+                size
+            ) / 2,
+            (
+                canvas.height -
+                size
+            ) / 2,
+            size,
+            size,
+            0,
+            0,
+            size,
+            size
+        );
+
+        return temp.toDataURL(
+            "image/png"
+        );
+    }
+
+    drawHeader();
+
+    // =====================
+    // EXEC SUMMARY
+    // =====================
+
+    doc.setTextColor(0);
+
+    doc.setFont(
+        "helvetica",
+        "bold"
+    );
+
+    doc.setFontSize(
+        18
+    );
+
+    doc.text(
+        "Executive Summary",
+        margin,
+        y
+    );
+
+    y += 12;
+
+    const metrics = [
+
+        {
+            title:
+                "Total Hours",
+            value:
+                `${totalHours}h`
+        },
+
+        {
+            title:
+                "Daily Average",
+            value:
+                `${averageDaily}h`
+        },
+
+        {
+            title:
+                "Top App",
+            value:
+                topApp
+        },
+
+        {
+            title:
+                "Consistency",
+            value:
+                `${consistency}%`
         }
+    ];
+
+    let x = margin;
+
+    metrics.forEach(metric => {
+
+        doc.setFillColor(
+            248,
+            249,
+            251
+        );
+
+        doc.setDrawColor(
+            225
+        );
+
+        doc.roundedRect(
+            x,
+            y,
+            40,
+            28,
+            4,
+            4,
+            "FD"
+        );
+
+        doc.setFontSize(9);
+
+        doc.setTextColor(
+            120
+        );
+
+        doc.text(
+            metric.title,
+            x + 4,
+            y + 8
+        );
+
+        doc.setFont(
+            "helvetica",
+            "bold"
+        );
+
+        doc.setTextColor(
+            20
+        );
+
+        doc.setFontSize(
+            15
+        );
+
+        doc.text(
+            metric.value,
+            x + 4,
+            y + 20
+        );
+
+        x += 44;
     });
 
+    y += 42;
+
+    // =====================
+    // CHARTS
+    // =====================
+
+    doc.setFontSize(18);
+
+    doc.setFont(
+        "helvetica",
+        "bold"
+    );
+
+    doc.text(
+        "Visual Analytics",
+        margin,
+        y
+    );
+
+    y += 10;
+
+    const studyChartImg =
+        studyChart.toBase64Image();
+
+    doc.addImage(
+        studyChartImg,
+        "PNG",
+        margin,
+        y,
+        172,
+        58
+    );
+
+    y += 70;
+
+    // FIXED DOUGHNUT
+
+    const doughnutImage =
+        cropChartToSquare(
+            appChart
+        );
+
+    const doughnutSize =
+        62;
+
+    doc.addImage(
+        doughnutImage,
+        "PNG",
+        (
+            pageWidth -
+            doughnutSize
+        ) / 2,
+        y,
+        doughnutSize,
+        doughnutSize
+    );
+
+    y += 74;
+
+    // =====================
+// INSIGHTS
+// =====================
+
+// Start insights on new page if
+// remaining space is too tight
+
+if (
+    y >
+    pageHeight - 95
+) {
+
+    doc.addPage();
+
+    drawHeader();
+}
+
+doc.setTextColor(0);
+
+doc.setFont(
+    "helvetica",
+    "bold"
+);
+
+doc.setFontSize(18);
+
+doc.text(
+    "Generated Insights",
+    margin,
+    y
+);
+
+y += 12;
+
+doc.setFont(
+    "helvetica",
+    "normal"
+);
+
+doc.setFontSize(11);
+
+const insights = [
+
+    `A total of ${totalHours} study hours were recorded across ${parsedData.length} snapshots.`,
+
+    `${consistency}% of recorded days contained measurable study activity.`,
+
+    `${topApp} was the dominant productivity application.`,
+
+    `Peak productivity occurred on ${new Date(bestDay.date).toLocaleDateString("en-IN")} with ${(
+        bestDay.trackedSeconds
+        / 3600
+    ).toFixed(1)} hours logged.`,
+
+    `Lowest activity occurred on ${new Date(lowestDay.date).toLocaleDateString("en-IN")} with ${(
+        lowestDay.trackedSeconds
+        / 3600
+    ).toFixed(1)} hours logged.`
+];
+
+insights.forEach(item => {
+
+    const wrappedLines =
+        doc.splitTextToSize(
+            `• ${item}`,
+            pageWidth -
+            (margin * 2)
+        );
+
+    const blockHeight =
+        wrappedLines.length * 6;
+
+    // paginate safely
+    if (
+        y + blockHeight >
+        pageHeight - 25
+    ) {
+
+        doc.addPage();
+
+        drawHeader();
+
+        doc.setFont(
+            "helvetica",
+            "normal"
+        );
+
+        doc.setFontSize(11);
+    }
+
+    wrappedLines.forEach(
+        line => {
+
+            doc.text(
+                line,
+                margin,
+                y
+            );
+
+            y += 2;
+        }
+    );
+
+    y += 10;
+});
+
+    // =====================
+// TABLE
+// =====================
+
+// Only move to new page if needed.
+// Do NOT force doc.addPage()
+y+=15
+ensureSpace(90);
+
+doc.setTextColor(0);
+
+doc.setFont(
+    "helvetica",
+    "bold"
+);
+
+doc.setFontSize(18);
+
+doc.text(
+    "Daily Snapshot Records",
+    margin,
+    y
+);
+
+y += 14;
+
+drawTableHeader();
+
+parsedData.forEach(item => {
+
+    // Proper page split support
+    if (
+        y >
+        pageHeight - 28
+    ) {
+
+        doc.addPage();
+
+        drawHeader();
+
+        y += 4;
+
+        drawTableHeader();
+    }
+
+    const date =
+        new Date(item.date)
+        .toLocaleDateString(
+            "en-IN",
+            {
+                day:
+                    "numeric",
+
+                month:
+                    "short",
+
+                year:
+                    "numeric"
+            }
+        );
+
+    const hours =
+        (
+            item.trackedSeconds
+            / 3600
+        ).toFixed(1);
+
+    // row separator
+    doc.setDrawColor(
+        240
+    );
+
+    doc.line(
+        margin,
+        y + 2,
+        pageWidth - margin,
+        y + 2
+    );
+
+    doc.setFont(
+        "helvetica",
+        "normal"
+    );
+
+    doc.setFontSize(11);
+
+    doc.text(
+        date,
+        22,
+        y
+    );
+
+    doc.text(
+        `${hours}h`,
+        90,
+        y
+    );
+
+    doc.text(
+        item.mostUsedApp
+        || "—",
+        125,
+        y
+    );
+
+    y += 10;
+});
+
+    // =====================
+    // FOOTERS
+    // =====================
+
+    const totalPages =
+        doc.internal
+            .getNumberOfPages();
+
+    for (
+        let i = 1;
+        i <= totalPages;
+        i++
+    ) {
+
+        doc.setPage(i);
+
+        doc.setDrawColor(
+            230
+        );
+
+        doc.line(
+            margin,
+            pageHeight - 15,
+            pageWidth - margin,
+            pageHeight - 15
+        );
+
+        doc.setFontSize(9);
+
+        doc.setTextColor(
+            120
+        );
+
+        doc.text(
+            "Generated by Adiutor Analytics",
+            margin,
+            pageHeight - 8
+        );
+
+        doc.text(
+            `Page ${i} of ${totalPages}`,
+            pageWidth - 42,
+            pageHeight - 8
+        );
+    }
+
     doc.save(
-        "adiutor-report.pdf"
+        "adiutor-analytics-report.pdf"
     );
 }
 
